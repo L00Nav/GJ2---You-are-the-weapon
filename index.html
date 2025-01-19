@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weapon</title>
+    <script src="./allegro.js"></script>
+    <script src="./game.js"></script>
+    <script>
+        function refocus()
+        {
+            let gameCanvas = document.getElementById("game_canvas");
+            gameCanvas.setAttribute('tabindex','0');
+            gameCanvas.focus();
+        }
+    </script>
+    <style>
+        body {
+            background-color: #101010;
+            color: #ddd;
+        }
+
+        body {
+            padding: 50px; /* change to 0 when deploying */
+            margin: 0;
+        }
+
+        .canvas {
+            position: absolute;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+        <canvas id="game_canvas" class="canvas" width="800" height="700" onclick="refocus()"></canvas>
+        <div id="debug" class="debug"></div>
+</body>
+</html>
