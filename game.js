@@ -96,6 +96,10 @@ const gameScene = {
     },
 };
 
+const craftingScene = {
+
+};
+
 
 
 
