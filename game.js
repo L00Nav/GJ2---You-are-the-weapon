@@ -1,7 +1,7 @@
 //Global variables
 const windowWidth = 640;
 const windowHeight = 360;
-const windowScale = 2;
+const windowScale = 1;
 
 let canvasBuffer;
 
@@ -17,7 +17,8 @@ let currentScene;
 const mainMenuScene = {
     items: [
         "New Game",
-        "Options",
+        "Crafting",
+        "Text cutscene",
     ],
     selection: 0,
     bgColour: makecol(20, 20, 20),
@@ -48,12 +49,11 @@ const mainMenuScene = {
         if(pressed[KEY_E])
         {
             if(this.selection == 0)
-            {
-                // this.optionsFlag = false;
                 currentScene = gameScene;
-            }
-            // if(this.selection == 1)
-                // this.optionsFlag = true;
+            if(this.selection == 1)
+                currentScene = craftingScene;
+            if(this.selection == 2)
+                currentScene = cutScene;
         }
     },
 };
@@ -100,6 +100,32 @@ const craftingScene = {
 
 };
 
+const cutScene = {
+    sm: null,
+
+    init: function(text) { //takes an array of strings
+        this.sm = new Cutscene(text);
+    },
+
+    reinit: function(text) { //takes an array of strings
+        this.sm.setText(text)
+    },
+
+    draw: function() {
+        this.sm.draw(canvasBuffer);
+    },
+
+    update: function() {
+        if(pressed[KEY_E] || pressed[KEY_SPACE])
+        {
+            if(this.sm.update())
+            {
+                currentScene = mainMenuScene;    
+            }
+        }
+    },
+}
+
 
 
 
@@ -114,11 +140,17 @@ function init()
     allegro_init_all("game_canvas", (windowWidth * windowScale), (windowHeight * windowScale));
 
     gameScene.init();
+    cutScene.init([
+        "This is a test",
+        "Does that make you upset?",
+        "Are you a weak little kitten who's afraid of going through a test? Well, I'm gonna extend the heck out of this message! What're you gonna do about that?",
+        "'What's the test for~!? D;'",
+        "That's what you sound like!",
+    ]);
 
     canvasBuffer = create_bitmap(windowWidth, windowHeight);
     document.getElementById("game_canvas").getContext("2d").imageSmoothingEnabled = false;
-
-
+    
     currentScene = mainMenuScene;
 }
 

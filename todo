@@ -1,0 +1,2 @@
+Make it so that when Cutscene runs out of space, it wipes the slate and moves on.
+Probably just clear the revealed entries from storage and reset the scene
