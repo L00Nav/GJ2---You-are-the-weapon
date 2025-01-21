@@ -37,14 +37,28 @@ class Cutscene
 {
     constructor(text = ["(Text missing)"])
     {
+        this.rawText = text;
         this.text = [];
         this.fadingIndex = 0;
         this.revealedIndex = 0;
-        this.renderStartIndex = 0;
         this.lineLinks = 0;
         this.fade = 0;
         this.fontSize = 24;
         this.setText(text);
+    }
+
+    resetIndexes()
+    {
+        this.fadingIndex = 0;
+        this.revealedIndex = 0;
+        this.lineLinks = 0;
+        this.fade = 0;
+    }
+
+    resetText()
+    {
+        this.text = [];
+        this.setText(this.rawText);
     }
 
     setText(text)
@@ -57,7 +71,6 @@ class Cutscene
                 this.text.push(text[i]);
             else //if line's too long, break it up. Assumes standard sentences
             {
-                // this.text.push("long line");
                 let tempString = "";
                 let words = text[i].split(" ");
                 for (let ii = 0; ii < words.length; ii++)
@@ -87,7 +100,7 @@ class Cutscene
         clear_to_color(canvas, makecol(20, 20, 20));
 
         let i;
-        for (i = this.renderStartIndex; i < this.revealedIndex; i++) //render revealed
+        for (i = 0; i < this.revealedIndex; i++) //render revealed
         {            
             textout_centre(canvas, //target
                 font, //font
@@ -142,8 +155,8 @@ class Cutscene
         //if there's nothing else to reveal
         if(this.revealedIndex > this.text.length)
         {
-            this.revealedIndex = 0;
-            this.fadingIndex = 0;
+            this.resetIndexes();
+            this.resetText();
             return 1;
         }
 
@@ -162,8 +175,15 @@ class Cutscene
 
         //if there's no more room, move on to the next messages
         if(60 + this.fontSize * this.fadingIndex * 2 > windowHeight)
-            this.renderStartIndex = 2;
-        console.log(this.renderStartIndex);
+        {
+            let text = this.text.slice(this.revealedIndex);
+            let lineLinks = this.lineLinks >> this.revealedIndex;
+
+            this.resetIndexes();
+
+            this.text = text;
+            this.lineLinks = lineLinks;
+        }
 
         return 0;
     }

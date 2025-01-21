@@ -143,9 +143,16 @@ function init()
     cutScene.init([
         "This is a test",
         "Does that make you upset?",
-        "Are you a weak little kitten who's afraid of going through a test? Well, I'm gonna extend the heck out of this message! What're you gonna do about that?",
+        "Are you a weak little kitten who's afraid of going through a test?",
         "'What's the test for~!? D;'",
         "That's what you sound like!",
+        "Well, I'll tell you, when I'm ready!",
+        "Do you ever like to lube up and browse your favourite websites without shady actors stealing your data...",
+        "Filler text",
+        "Filler text",
+        "Filler text",
+        "Filler text",
+        "Filler text",
     ]);
 
     canvasBuffer = create_bitmap(windowWidth, windowHeight);
