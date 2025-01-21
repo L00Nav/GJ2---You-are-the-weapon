@@ -1,7 +1,9 @@
 //Global variables
 const windowWidth = 640;
 const windowHeight = 360;
-const windowScale = 1;
+var windowScale = 1;
+const canvasId = "game_canvas";
+let htmlCanvas;
 
 let canvasBuffer;
 
@@ -15,45 +17,116 @@ let sentrySprite;
 let currentScene;
 
 const mainMenuScene = {
-    items: [
-        "New Game",
-        "Crafting",
-        "Text cutscene",
-    ],
+    mainId: 1 << 6,
+    optionsId: 1 << 7,
+    activeMenu: null,
+    mainMenu: null,
+    options: {
+        0: 1, //scale
+    },
+    optionsMenu: null,
     selection: 0,
     bgColour: makecol(20, 20, 20),
     font: null,
 
+    init: function() {
+        this.mainMenu = new ListMenu([
+            "New Game",
+            "Options",
+            "Crafting",
+            "Cutscene",
+        ], this.mainId);
+
+        this.optionsMenu = new ListMenu([
+            "Scale",
+            "Back",
+        ], this.optionsId, this.options);
+
+        this.activeMenu = this.mainMenu;
+    },
+
     draw: function() {
         clear_to_color(canvasBuffer, this.bgColour);
 
-        for (i = 0; i < this.items.length; i++)
-            textout_centre(canvasBuffer, font, this.items[i], windowWidth * 0.5, 140 + (i*40), 36, makecol(200, 200, 200), makecol(40, i == this.selection? 150 : 40, 40), 1);
+        this.activeMenu.draw(canvasBuffer);
     },
 
     update: function() {
+        let selection = this.activeMenu.getSelection();
+
+        //navigation
         if(pressed[KEY_W])
-        {
-            this.selection--;
-            if(this.selection < 0)
-                this.selection = this.items.length - 1;
-        }
+            this.activeMenu.up();
 
         if(pressed[KEY_S])
+            this.activeMenu.down();
+
+        //selection
+        if(pressed[KEY_F])
         {
-            this.selection++;
-            if(this.selection > this.items.length - 1)
-                this.selection = 0;
+            switch(selection)
+            {
+            case 0 | this.mainId:
+                currentScene = gameScene;
+                break;
+            case 1 | this.mainId:
+                this.activeMenu = this.optionsMenu;
+                break;
+            case 2 | this.mainId:
+                currentScene = craftingScene;
+                break;
+            case 3 | this.mainId:
+                currentScene = cutScene;
+                break;
+            case 1 | this.optionsId:
+                this.activeMenu = this.mainMenu;
+                break;
+            default:
+                break;
+            }
+
+            // if(this.selection == 2)
+            // {
+            //     windowScale = 1;
+            //     set_gfx_mode(canvasId, windowWidth * windowScale, windowHeight * windowScale);
+            //     htmlCanvas.getContext("2d").imageSmoothingEnabled = false;
+            // }
         }
 
-        if(pressed[KEY_E])
+        //adjustment
+        if (pressed[KEY_A] && selection & this.optionsId)
         {
-            if(this.selection == 0)
-                currentScene = gameScene;
-            if(this.selection == 1)
-                currentScene = craftingScene;
-            if(this.selection == 2)
-                currentScene = cutScene;
+            let index = selection & ~this.optionsId;
+            if (this.options[index])
+                this.options[index]--;
+            
+            if (!this.options[0])
+                this.options[0]++;
+
+            if (index == 0)
+            {
+                windowScale = this.options[0];
+                set_gfx_mode(canvasId, windowWidth * windowScale, windowHeight * windowScale);
+                htmlCanvas.getContext("2d").imageSmoothingEnabled = false;
+            }
+        }
+
+        if (pressed[KEY_D] && selection & this.optionsId)
+        {
+            let index = selection & ~this.optionsId;
+            if (this.options[index])
+                this.options[index]++;
+
+            if (index == 0 && this.options[0] > 5)
+                this.options[0]--;
+
+            if (index == 0)
+            {
+                windowScale = this.options[0];
+                set_gfx_mode(canvasId, windowWidth * windowScale, windowHeight * windowScale);
+                htmlCanvas.getContext("2d").imageSmoothingEnabled = false;
+            }
+            //there's gotta be a more elegant way to do this...
         }
     },
 };
@@ -93,6 +166,8 @@ const gameScene = {
     },
 
     update: function() {
+        if(pressed[KEY_ESC])
+            currentScene = mainMenuScene;
     },
 };
 
@@ -137,26 +212,19 @@ const cutScene = {
 
 function init()
 {
-    allegro_init_all("game_canvas", (windowWidth * windowScale), (windowHeight * windowScale));
+    htmlCanvas = document.getElementById(canvasId);
 
+    allegro_init_all(canvasId, (windowWidth * windowScale), (windowHeight * windowScale));
+
+    mainMenuScene.init();
     gameScene.init();
     cutScene.init([
         "This is a test",
-        "Does that make you upset?",
-        "Are you a weak little kitten who's afraid of going through a test?",
-        "'What's the test for~!? D;'",
-        "That's what you sound like!",
-        "Well, I'll tell you, when I'm ready!",
-        "Do you ever like to lube up and browse your favourite websites without shady actors stealing your data...",
-        "Filler text",
-        "Filler text",
-        "Filler text",
-        "Filler text",
-        "Filler text",
+        "Loren ipsum and all that",
     ]);
 
     canvasBuffer = create_bitmap(windowWidth, windowHeight);
-    document.getElementById("game_canvas").getContext("2d").imageSmoothingEnabled = false;
+    htmlCanvas.getContext("2d").imageSmoothingEnabled = false;
     
     currentScene = mainMenuScene;
 }

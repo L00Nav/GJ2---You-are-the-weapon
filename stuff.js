@@ -1,4 +1,53 @@
 /////////////////////////////////////////////////////////////////////////////////
+/// Cutscene
+/////////////////////////////////////////////////////////////////////////////////
+
+class ListMenu
+{
+    constructor(items, id, secItems = {})
+    {
+        this.items = items;
+        this.secondaryItems = secItems;
+        this.id = id;
+        this.selection = 0;
+        // this.bgColour = makecol(20, 20, 20);
+        this.font = font;
+    }
+
+    draw(canvas)
+    {
+        for (let i = 0; i < this.items.length; i++)
+            textout_centre(canvas, this.font, this.items[i], windowWidth * 0.5, 140 + (i*40), 36, makecol(200, 200, 200), makecol(40, i == this.selection? 150 : 40, 40), 1);
+
+        for (let i = 0; i < this.items.length; i++)
+            if (this.secondaryItems[i])
+            {
+                textout_centre(canvas, this.font, this.secondaryItems[i], windowWidth * 0.7, 140 + (i*40), 36, makecol(200, 200, 200), makecol(40, i == this.selection? 150 : 40, 40), 1);
+            }
+    }
+
+    up()
+    {
+        this.selection--;
+        if(this.selection < 0)
+            this.selection = this.items.length - 1;
+    }
+
+    down()
+    {
+        this.selection++;
+        if(this.selection > this.items.length - 1)
+            this.selection = 0;
+    }
+
+    getSelection()
+    {
+        return this.selection | this.id;
+    }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
 /// Crafting menu
 /////////////////////////////////////////////////////////////////////////////////
 
