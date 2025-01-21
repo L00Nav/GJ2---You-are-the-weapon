@@ -1,0 +1,5 @@
+Crafting:
+
+Interface slot storage - an array (for looping) of objects that store their position (easy to position and have gaps)
+
+RecipeBook needs solid search methods, taking strings?

@@ -84,13 +84,6 @@ const mainMenuScene = {
             default:
                 break;
             }
-
-            // if(this.selection == 2)
-            // {
-            //     windowScale = 1;
-            //     set_gfx_mode(canvasId, windowWidth * windowScale, windowHeight * windowScale);
-            //     htmlCanvas.getContext("2d").imageSmoothingEnabled = false;
-            // }
         }
 
         //adjustment
@@ -145,8 +138,8 @@ const gameScene = {
         this.fieldImg = create_bitmap(this.scale * this.field[0].length, this.scale * this.field.length);
         this.bgColour = makecol(0, 50, 0);
     },
-    initField: function() {
 
+    initField: function() {
         for(let i = 0; i < this.field.length; i++)
         {
             for(let ii = 0; ii < this.field[i].length; ii++)
@@ -172,7 +165,16 @@ const gameScene = {
 };
 
 const craftingScene = {
+    bgColour: makecol(60, 40, 30),
 
+    draw: function() {
+        clear_to_color(canvasBuffer, this.bgColour);
+    },
+
+    update: function() {
+        if(pressed[KEY_ESC])
+            currentScene = mainMenuScene;
+    },
 };
 
 const cutScene = {

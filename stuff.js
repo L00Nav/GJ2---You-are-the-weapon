@@ -10,7 +10,6 @@ class ListMenu
         this.secondaryItems = secItems;
         this.id = id;
         this.selection = 0;
-        // this.bgColour = makecol(20, 20, 20);
         this.font = font;
     }
 
