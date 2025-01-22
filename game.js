@@ -16,6 +16,8 @@ let sentrySprite;
 
 let currentScene;
 
+///////////////////////////////////////////////////////////////////////////////// Main menu
+
 const mainMenuScene = {
     mainId: 1 << 6,
     optionsId: 1 << 7,
@@ -124,6 +126,8 @@ const mainMenuScene = {
     },
 };
 
+///////////////////////////////////////////////////////////////////////////////// Game
+
 const gameScene = {
     field: ["ttttt",
             "t***t",
@@ -164,11 +168,20 @@ const gameScene = {
     },
 };
 
+///////////////////////////////////////////////////////////////////////////////// Crafting
+
 const craftingScene = {
     bgColour: makecol(60, 40, 30),
+    menu: null,
+
+    init: function(gridWidth, cells) {
+        this.menu = new CraftingMenu(gridWidth, cells);
+    },
 
     draw: function() {
         clear_to_color(canvasBuffer, this.bgColour);
+
+        this.menu.draw(canvasBuffer);
     },
 
     update: function() {
@@ -176,6 +189,8 @@ const craftingScene = {
             currentScene = mainMenuScene;
     },
 };
+
+///////////////////////////////////////////////////////////////////////////////// Cutscene
 
 const cutScene = {
     sm: null,
@@ -220,6 +235,17 @@ function init()
 
     mainMenuScene.init();
     gameScene.init();
+    craftingScene.init(3, [
+        false,
+        ["", "catalyst"],
+        false,
+        ["", "forge"],
+        ["", "ingredient"],
+        ["", "tanning-rack"],
+        false,
+        ["", "base"],
+        false,
+    ]);
     cutScene.init([
         "This is a test",
         "Loren ipsum and all that",

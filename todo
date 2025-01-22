@@ -1,5 +1,13 @@
 Crafting:
 
-Interface slot storage - an array (for looping) of objects that store their position (easy to position and have gaps)
+Interface slot storage - an array (for looping) of objects that store their position (easy to position and have gaps).
 
 RecipeBook needs solid search methods, taking strings?
+
+GridCraftingMenu (separate into a parent-child class if this is to be reused in future projects)
+	Stores an array of objects - type, current_item
+	Array is 1d and divides by width for new rows. Easier to loop through
+	Gaps are represented by empty objects or even zeroes or 'false' bools
+
+
+Use case: You got yellow and green. Add those together, make blue

@@ -52,12 +52,25 @@ class ListMenu
 
 class CraftingMenu
 {
-    constructor(gridWidth, gridHeight)
+    constructor(gridWidth = 1, cells = [])
     {
-        this.grid = [];
-        for(let i = 0; i < gridHeight; i++)
-            for(let ii = 0; ii < gridHeight; ii++)
-                this.grid[i][ii] = undefined; //how to store slots. Numbers with item IDs? Strings perhaps, for readability. An array of type (base, ingredient, catalyst) + current item? Maybe keep that in a separate array
+        this.grid = cells;
+        this.width = gridWidth;
+    }
+
+    draw(canvas)
+    {
+        let x, y;
+        for(let i = 0; i < this.grid.length; i++)
+        {
+            x = i % this.width + 1;
+            y = Math.floor(i / this.width) + 1;
+
+            if(this.grid[i])
+            {
+                rect(canvas, x*150, y*80, 50, 50, makecol(220, 180, 180), 4);
+            }
+        }
     }
 }
 
@@ -105,12 +118,13 @@ class Cutscene
 
     resetText()
     {
-        this.text = [];
         this.setText(this.rawText);
     }
 
     setText(text)
     {
+        this.text = [];
+        this.resetIndexes();
         let bitIndex = 1;
 
         for (let i = 0; i < text.length; i++)
