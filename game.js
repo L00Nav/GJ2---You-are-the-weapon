@@ -176,6 +176,15 @@ const craftingScene = {
 
     init: function(gridWidth, cells) {
         this.menu = new CraftingMenu(gridWidth, cells);
+        let test = new Recipe(
+            [
+                {itemName: "yellow", type: "base"},
+                {itemName: "green", type: "ingredient"},
+            ],
+            [
+                "blue",
+            ]);
+        this.menu.setRecipes([test]);
     },
 
     draw: function() {
@@ -261,9 +270,16 @@ function main()
 {
     init();
     sentrySprite = load_bmp('./sentry.png');
+    yellow = create_bitmap(50, 50);
+    green = create_bitmap(50, 50);
+    blue = create_bitmap(50, 50);
 
     ready( function(){
         gameScene.initField();
+
+        rectfill(yellow, 0, 0, 50, 50, makecol(255, 255, 0));
+        rectfill(green, 0, 0, 50, 50, makecol(0, 255, 0));
+        rectfill(blue, 0, 0, 50, 50, makecol(0, 0, 255));
 
         loop(function(){
             currentScene.update();

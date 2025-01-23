@@ -56,6 +56,22 @@ class CraftingMenu
     {
         this.grid = cells;
         this.width = gridWidth;
+        this.recipes = [];
+    }
+
+    setRecipes(recipes)
+    {
+        this.recipes = recipes;
+    }
+
+    addRecipes(recipes)
+    {
+        this.recipes.concat(recipes);
+    }
+
+    clearRecipes()
+    {
+        this.recipes = [];
     }
 
     draw(canvas)
@@ -75,19 +91,91 @@ class CraftingMenu
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-/// Recipes
-/////////////////////////////////////////////////////////////////////////////////
-
-class RecipeBook
+class Recipe
 {
-    constructor()
+    constructor(input, output)
     {
-        //Perhaps a more sensible way to store this might be as a recipe book class, storing arrays with 0 index item being the output
-        //That way, we can have several sets of recipe list for different stages of the game
-        //Also, reuse the recipe lists for other stuff, like the quest menu
+        this.input = input;
+        this.output = output;
+    }
+
+    uses(item)
+    {
+        for (let i = 0; i < this.input.length; i++)
+            if (item.name == this.input[i].itemName)
+                return true;
+
+        return false;
+    }
+    
+    usesAny(items) 
+    {
+        for (let i = 0; i < items.length; i++)
+            if (uses(items[i]))
+                return true;
+
+        return false;
+    }
+
+    usesAll(items)
+    {
+        for (let i = 0; i < items.length; i++)
+            if(!uses(items[i]))
+                return false;
+
+        return true;
     }
 }
+
+
+class Item
+{
+    constructor(item, amount)
+    {
+        this.name = item;
+        this.amount = amount;
+    }
+
+    add(amount)
+    {
+        this.amount += amount;
+    }
+
+    subtract(amount)
+    {
+        this.amount -= amount;
+    }
+}
+
+/* Store as objects, because crafting is done once/input
+
+    Recipes:
+    -stored in memory (probably in an object)
+    -easy to loop through
+    -easy to retrieve data from
+
+    {input: [
+        {name: "...", type: "..."},
+        {name: "...", type: "..."},
+    ],
+    output: [
+        {name: "...", type: "..."},
+    ]
+    
+    usesAny: function(items) {
+        for (let i = 0; i < items.length; i++)
+            for (let r = 0; r < this.input.length; r++)
+                if (items[i] )
+
+        return false;
+    }
+    }
+
+
+    Inventory:
+    -Just a list of strings. Otherwise, we're restricting items to specific types for no reason
+
+*/
 
 
 /////////////////////////////////////////////////////////////////////////////////

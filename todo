@@ -1,13 +1,11 @@
+Consider adding a scene manager to handle the flow, as main seems unsuited for it.
+
 Crafting:
 
-Interface slot storage - an array (for looping) of objects that store their position (easy to position and have gaps).
-
-RecipeBook needs solid search methods, taking strings?
-
-GridCraftingMenu (separate into a parent-child class if this is to be reused in future projects)
-	Stores an array of objects - type, current_item
-	Array is 1d and divides by width for new rows. Easier to loop through
-	Gaps are represented by empty objects or even zeroes or 'false' bools
-
-
-Use case: You got yellow and green. Add those together, make blue
+-Focus on a slot
+-Have inventory
+-Open inventory
+-Insert an item into a slot
+-Filter relevant items
+-Highlight items with that share a recipe with selected items
+-Actually craft
