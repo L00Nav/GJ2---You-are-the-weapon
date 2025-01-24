@@ -2,8 +2,6 @@ Consider adding a scene manager to handle the flow, as main seems unsuited for i
 
 Crafting:
 
--Focus on a slot
--Have inventory
 -Open inventory
 -Insert an item into a slot
 -Filter relevant items

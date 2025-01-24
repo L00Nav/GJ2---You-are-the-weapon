@@ -1,3 +1,7 @@
+//Global variables
+const windowWidth = 640;
+const windowHeight = 360;
+
 /////////////////////////////////////////////////////////////////////////////////
 /// Cutscene
 /////////////////////////////////////////////////////////////////////////////////
@@ -16,12 +20,12 @@ class ListMenu
     draw(canvas)
     {
         for (let i = 0; i < this.items.length; i++)
-            textout_centre(canvas, this.font, this.items[i], windowWidth * 0.5, 140 + (i*40), 36, makecol(200, 200, 200), makecol(40, i == this.selection? 150 : 40, 40), 1);
+            textout_centre(canvas, this.font, this.items[i], windowWidth * 0.5, 110 + (i*50), 36, makecol(200, 200, 200), makecol(40, i == this.selection? 150 : 40, 40), 1);
 
         for (let i = 0; i < this.items.length; i++)
             if (this.secondaryItems[i])
             {
-                textout_centre(canvas, this.font, this.secondaryItems[i], windowWidth * 0.7, 140 + (i*40), 36, makecol(200, 200, 200), makecol(40, i == this.selection? 150 : 40, 40), 1);
+                textout_centre(canvas, this.font, this.secondaryItems[i], windowWidth * 0.7, 110 + (i*50), 36, makecol(200, 200, 200), makecol(40, i == this.selection? 150 : 40, 40), 1);
             }
     }
 
@@ -54,38 +58,118 @@ class CraftingMenu
 {
     constructor(gridWidth = 1, cells = [])
     {
-        this.grid = cells;
-        this.width = gridWidth;
+        this.grid = [];
+        for (let i = 0; i < cells.length; i += gridWidth)
+        {
+            this.grid = this.grid.concat( [cells.slice(i, i + gridWidth)] );
+        }
         this.recipes = [];
+        this.inventory = [];
+        this.visibleInventory = [];
+        this.x = 0;
+        this.y = 0;
+
+        this.gridDispBaseX = 220;
+        this.gridDispBaseY = 80;
+        this.gridDispMultX = 160;
+        this.gridDispMultY = 80;
+        this.cellW = 50;
+        this.cellH = 50;
+
+        updateVisibleInventory();
     }
 
-    setRecipes(recipes)
+    setRecipes(recipes) {this.recipes = recipes;}
+    addRecipes(recipes) {this.recipes = this.recipes.concat(recipes);}
+    clearRecipes() {this.recipes = [];}
+
+    setInventory(items) {this.inventory = items;}
+    addToInventory(items) {this.inventory = this.inventory.concat(items);}
+    clearInventory(items) {this.inventory = [];}
+
+    selectionUp()
     {
-        this.recipes = recipes;
+        this.y--;
+        if(this.y < 0)
+            this.y += this.grid.length;
+        updateVisibleInventory();
+    }
+    selectionDown()
+    {
+        this.y++;
+        if(this.y >= this.grid.length)
+            this.y -= this.grid.length;
+        updateVisibleInventory();
+    }
+    selectionLeft()
+    {
+        this.x--;
+        if(this.x < 0)
+            this.x += this.grid[0].length;
+        updateVisibleInventory();
+    }
+    selectionRight()
+    {
+        this.x++;
+        if(this.x >= this.grid[0].length)
+            this.x -= this.grid[0].length;
+        updateVisibleInventory();
     }
 
-    addRecipes(recipes)
+    updateVisibleInventory()
     {
-        this.recipes.concat(recipes);
+        //determine which items are displayed atm
+        //call on init, selection movement and during crafting
     }
 
-    clearRecipes()
+    test()
     {
-        this.recipes = [];
+        console.log(this.inventory);
     }
 
     draw(canvas)
     {
-        let x, y;
-        for(let i = 0; i < this.grid.length; i++)
-        {
-            x = i % this.width + 1;
-            y = Math.floor(i / this.width) + 1;
+        rectfill(canvas, 0, 0, windowWidth * 0.3, windowHeight, makecol(30, 20, 10));
 
-            if(this.grid[i])
+        for (let i = 0; i < this.inventory.length; i++)
+        {
+            textout(canvas, font, this.inventory[i],
+             16, 34 + (i*30), 20, makecol(200, 200, 200));
+        }
+
+        for(let y = 0; y < this.grid.length; y++)
+        {
+            for (let x = 0; x < this.grid[0].length; x++)
             {
-                rect(canvas, x*150, y*80, 50, 50, makecol(220, 180, 180), 4);
+                if(this.grid[y][x])
+                {
+                    let colour = (this.x == x && this.y == y) ? makecol(128,128,255) : makecol(200,160,130);
+
+                    rectfill(canvas,
+                    x * this.gridDispMultX + this.gridDispBaseX,
+                    y * this.gridDispMultY + this.gridDispBaseY,
+                    this.cellW,
+                    this.cellH,
+                    makecol(0, 0, 0, 120));
+
+                    rect(canvas,
+                    x * this.gridDispMultX + this.gridDispBaseX,
+                    y * this.gridDispMultY + this.gridDispBaseY,
+                    this.cellW,
+                    this.cellH,
+                    colour, 3);
+                }
             }
+        }
+
+        if(!this.grid[this.y][this.x])
+        {
+            circlefill(canvas,
+            this.x * this.gridDispMultX +
+             this.gridDispBaseX + (this.cellW/2),
+            this.y * this.gridDispMultY +
+             this.gridDispBaseY + (this.cellH/2),
+            5, makecol(128, 128, 255))
         }
     }
 }

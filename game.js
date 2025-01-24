@@ -1,6 +1,4 @@
 //Global variables
-const windowWidth = 640;
-const windowHeight = 360;
 var windowScale = 1;
 const canvasId = "game_canvas";
 let htmlCanvas;
@@ -34,8 +32,8 @@ const mainMenuScene = {
     init: function() {
         this.mainMenu = new ListMenu([
             "New Game",
-            "Options",
             "Crafting",
+            "Options",
             "Cutscene",
         ], this.mainId);
 
@@ -72,10 +70,10 @@ const mainMenuScene = {
                 currentScene = gameScene;
                 break;
             case 1 | this.mainId:
-                this.activeMenu = this.optionsMenu;
+                currentScene = craftingScene;
                 break;
             case 2 | this.mainId:
-                currentScene = craftingScene;
+                this.activeMenu = this.optionsMenu;
                 break;
             case 3 | this.mainId:
                 currentScene = cutScene;
@@ -185,6 +183,8 @@ const craftingScene = {
                 "blue",
             ]);
         this.menu.setRecipes([test]);
+        test = ["red", "green", "yellow"];
+        this.menu.setInventory(test);
     },
 
     draw: function() {
@@ -196,6 +196,21 @@ const craftingScene = {
     update: function() {
         if(pressed[KEY_ESC])
             currentScene = mainMenuScene;
+
+        if(pressed[KEY_W])
+            this.menu.selectionUp();
+
+        if(pressed[KEY_S])
+            this.menu.selectionDown();
+
+        if(pressed[KEY_A])
+            this.menu.selectionLeft();
+
+        if(pressed[KEY_D])
+            this.menu.selectionRight();
+
+        if(pressed[KEY_F])
+            this.menu.test();
     },
 };
 
@@ -217,7 +232,7 @@ const cutScene = {
     },
 
     update: function() {
-        if(pressed[KEY_E] || pressed[KEY_SPACE])
+        if(pressed[KEY_F])
         {
             if(this.sm.update())
             {
@@ -253,7 +268,6 @@ function init()
         ["", "tanning-rack"],
         false,
         ["", "base"],
-        false,
     ]);
     cutScene.init([
         "This is a test",
