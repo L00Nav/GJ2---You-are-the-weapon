@@ -1,5 +1,5 @@
 //Global variables
-var windowScale = 1;
+var windowScale = 2;
 const canvasId = "game_canvas";
 let htmlCanvas;
 
@@ -41,6 +41,8 @@ const mainMenuScene = {
             "Scale",
             "Back",
         ], this.optionsId, this.options);
+
+        this.font = mainFont;
 
         this.activeMenu = this.mainMenu;
     },
@@ -185,6 +187,8 @@ const craftingScene = {
         this.menu.setRecipes([test]);
         test = ["red", "green", "yellow"];
         this.menu.setInventory(test);
+
+        //rearrange for recipe book
     },
 
     draw: function() {
@@ -240,7 +244,24 @@ const cutScene = {
             }
         }
     },
-}
+};
+
+
+
+const fontScene = {
+    
+
+    draw: function() {
+        clear_to_color(canvasBuffer, this.bgColour);
+        draw_sprite(canvasBuffer, this.fieldImg, 100.5, 100.5);
+        draw_sprite(canvasBuffer, sentrySprite, 100.5, 100.5);
+    },
+
+    update: function() {
+        if(pressed[KEY_ESC])
+            currentScene = mainMenuScene;
+    },
+};
 
 
 

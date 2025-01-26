@@ -2,6 +2,8 @@
 const windowWidth = 640;
 const windowHeight = 360;
 
+const mainFont = load_font("./fonts/Bookinsanity Bold.otf");
+
 /////////////////////////////////////////////////////////////////////////////////
 /// Cutscene
 /////////////////////////////////////////////////////////////////////////////////
@@ -14,7 +16,7 @@ class ListMenu
         this.secondaryItems = secItems;
         this.id = id;
         this.selection = 0;
-        this.font = font;
+        this.font = mainFont;
     }
 
     draw(canvas)
@@ -63,7 +65,7 @@ class CraftingMenu
         {
             this.grid = this.grid.concat( [cells.slice(i, i + gridWidth)] );
         }
-        this.recipes = [];
+        this.recipeBook = new RecipeBook();
         this.inventory = [];
         this.visibleInventory = [];
         this.x = 0;
@@ -76,50 +78,61 @@ class CraftingMenu
         this.cellW = 50;
         this.cellH = 50;
 
-        updateVisibleInventory();
+        this.updateVisibleInventory();
     }
-
-    setRecipes(recipes) {this.recipes = recipes;}
-    addRecipes(recipes) {this.recipes = this.recipes.concat(recipes);}
-    clearRecipes() {this.recipes = [];}
 
     setInventory(items) {this.inventory = items;}
     addToInventory(items) {this.inventory = this.inventory.concat(items);}
-    clearInventory(items) {this.inventory = [];}
+    clearInventory() {this.inventory = [];}
 
     selectionUp()
     {
         this.y--;
         if(this.y < 0)
             this.y += this.grid.length;
-        updateVisibleInventory();
+        this.updateVisibleInventory();
     }
     selectionDown()
     {
         this.y++;
         if(this.y >= this.grid.length)
             this.y -= this.grid.length;
-        updateVisibleInventory();
+        this.updateVisibleInventory();
     }
     selectionLeft()
     {
         this.x--;
         if(this.x < 0)
             this.x += this.grid[0].length;
-        updateVisibleInventory();
+        this.updateVisibleInventory();
     }
     selectionRight()
     {
         this.x++;
         if(this.x >= this.grid[0].length)
             this.x -= this.grid[0].length;
-        updateVisibleInventory();
+        this.updateVisibleInventory();
     }
 
     updateVisibleInventory()
     {
         //determine which items are displayed atm
         //call on init, selection movement and during crafting
+    }
+
+    recalculateViableItems()
+    {
+        for(let y = 0; y < this.grid.length; y++)
+        {
+            for(let x = 0; x < this.grid[y].length; x++)
+            {
+                //skip over gaps
+                if(!grid[y][x])
+                    continue;
+
+                //sumfin sumfin call the recipe method 
+            }
+        }
     }
 
     test()
@@ -129,14 +142,16 @@ class CraftingMenu
 
     draw(canvas)
     {
+        //inventory
         rectfill(canvas, 0, 0, windowWidth * 0.3, windowHeight, makecol(30, 20, 10));
 
         for (let i = 0; i < this.inventory.length; i++)
         {
-            textout(canvas, font, this.inventory[i],
+            textout(canvas, mainFont, this.inventory[i],
              16, 34 + (i*30), 20, makecol(200, 200, 200));
         }
 
+        //crafting slots
         for(let y = 0; y < this.grid.length; y++)
         {
             for (let x = 0; x < this.grid[0].length; x++)
@@ -162,6 +177,7 @@ class CraftingMenu
             }
         }
 
+        //
         if(!this.grid[this.y][this.x])
         {
             circlefill(canvas,
@@ -171,6 +187,25 @@ class CraftingMenu
              this.gridDispBaseY + (this.cellH/2),
             5, makecol(128, 128, 255))
         }
+    }
+}
+
+
+class RecipeBook
+{
+    constructor()
+    {
+        //set recipes
+        this.recipes = [];
+    }
+
+    setRecipes(recipes) {this.recipes = recipes;}
+    addRecipes(recipes) {this.recipes = this.recipes.concat(recipes);}
+    clearRecipes() {this.recipes = [];}
+
+    getItemsBySlotType(slotType)
+    {
+
     }
 }
 
@@ -337,7 +372,7 @@ class Cutscene
         for (i = 0; i < this.revealedIndex; i++) //render revealed
         {            
             textout_centre(canvas, //target
-                font, //font
+                mainFont, //font
                 this.text[i], //text
                 windowWidth * 0.5, //x
                 60 + ((i)*this.fontSize*2), //y
@@ -350,7 +385,7 @@ class Cutscene
         while (i < this.fadingIndex) //render fade-ins, if any
         {
             textout_centre(canvas, //target
-                font, //font
+                mainFont, //font
                 this.text[i], //text
                 windowWidth * 0.5, //x
                 60 + ((i)*this.fontSize*2), //y
