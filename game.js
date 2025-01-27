@@ -1,11 +1,14 @@
 //Global variables
-var windowScale = 2;
+var windowScale = 1;
 const canvasId = "game_canvas";
 let htmlCanvas;
 
 let canvasBuffer;
 
 let sentrySprite;
+let yellowSprite;
+let greenSprite;
+let blueSprite;
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -184,11 +187,16 @@ const craftingScene = {
             [
                 "blue",
             ]);
-        this.menu.setRecipes([test]);
-        test = ["red", "green", "yellow"];
-        this.menu.setInventory(test);
+        this.menu.recipeBook.setRecipes([test]);
 
         //rearrange for recipe book
+    },
+
+    secondInit: function() {
+        itemLibrary = {yellow: yellowSprite,
+                green: greenSprite,
+                blue: blueSprite};
+        this.menu.setInventory(["yellow", "green", ""]);
     },
 
     draw: function() {
@@ -214,7 +222,7 @@ const craftingScene = {
             this.menu.selectionRight();
 
         if(pressed[KEY_F])
-            this.menu.test();
+            this.menu.select();
     },
 };
 
@@ -274,9 +282,10 @@ const fontScene = {
 
 function init()
 {
-    htmlCanvas = document.getElementById(canvasId);
-
     allegro_init_all(canvasId, (windowWidth * windowScale), (windowHeight * windowScale));
+
+    htmlCanvas = document.getElementById(canvasId);
+    htmlCanvas.getContext("2d").imageSmoothingEnabled = false;
 
     mainMenuScene.init();
     gameScene.init();
@@ -296,7 +305,6 @@ function init()
     ]);
 
     canvasBuffer = create_bitmap(windowWidth, windowHeight);
-    htmlCanvas.getContext("2d").imageSmoothingEnabled = false;
     
     currentScene = mainMenuScene;
 }
@@ -305,16 +313,18 @@ function main()
 {
     init();
     sentrySprite = load_bmp('./sentry.png');
-    yellow = create_bitmap(50, 50);
-    green = create_bitmap(50, 50);
-    blue = create_bitmap(50, 50);
+    yellowSprite = create_bitmap(48, 48);
+    greenSprite = create_bitmap(48, 48);
+    blueSprite = create_bitmap(48, 48);
 
     ready( function(){
         gameScene.initField();
 
-        rectfill(yellow, 0, 0, 50, 50, makecol(255, 255, 0));
-        rectfill(green, 0, 0, 50, 50, makecol(0, 255, 0));
-        rectfill(blue, 0, 0, 50, 50, makecol(0, 0, 255));
+        rectfill(yellowSprite, 0, 0, 48, 48, makecol(230, 230, 80));
+        rectfill(greenSprite, 0, 0, 48, 48, makecol(80, 230, 80));
+        rectfill(blueSprite, 0, 0, 48, 48, makecol(80, 80, 230));
+
+        craftingScene.secondInit();
 
         loop(function(){
             currentScene.update();

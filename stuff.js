@@ -56,6 +56,8 @@ class ListMenu
 /// Crafting menu
 /////////////////////////////////////////////////////////////////////////////////
 
+let itemLibrary;
+
 class CraftingMenu
 {
     constructor(gridWidth = 1, cells = [])
@@ -70,6 +72,9 @@ class CraftingMenu
         this.visibleInventory = [];
         this.x = 0;
         this.y = 0;
+        this.iy = 0;
+        this.gridVelocity = 1;
+        this.listVelocity = 0;
 
         this.gridDispBaseX = 220;
         this.gridDispBaseY = 80;
@@ -87,28 +92,36 @@ class CraftingMenu
 
     selectionUp()
     {
-        this.y--;
+        this.y -= this.gridVelocity;
         if(this.y < 0)
             this.y += this.grid.length;
         this.updateVisibleInventory();
+
+        this.iy -= this.listVelocity;
+        if(this.iy < 0)
+            this.iy += this.inventory.length;
     }
     selectionDown()
     {
-        this.y++;
+        this.y += this.gridVelocity;
         if(this.y >= this.grid.length)
             this.y -= this.grid.length;
         this.updateVisibleInventory();
+
+        this.iy += this.listVelocity;
+        if(this.iy >= this.inventory.length)
+            this.iy -= this.inventory.length;
     }
     selectionLeft()
     {
-        this.x--;
+        this.x -= this.gridVelocity;
         if(this.x < 0)
             this.x += this.grid[0].length;
         this.updateVisibleInventory();
     }
     selectionRight()
     {
-        this.x++;
+        this.x += this.gridVelocity;
         if(this.x >= this.grid[0].length)
             this.x -= this.grid[0].length;
         this.updateVisibleInventory();
@@ -135,9 +148,22 @@ class CraftingMenu
         }
     }
 
-    test()
+    clearSlot(x,y)
     {
-        console.log(this.inventory);
+        // if(this.grid[y][x])
+
+    }
+
+    select()
+    {
+        if(this.grid[this.y][this.x])
+        {
+            let temp = this.gridVelocity;
+            this.gridVelocity = this.listVelocity;
+            this.listVelocity = temp;
+        }
+
+        // if(this.listVelocity)
     }
 
     draw(canvas)
@@ -145,16 +171,22 @@ class CraftingMenu
         //inventory
         rectfill(canvas, 0, 0, windowWidth * 0.3, windowHeight, makecol(30, 20, 10));
 
+        if(this.listVelocity)
+            rectfill(canvas, 0, 7 + this.iy*54, windowWidth * 0.3, 54, makecol(128,128,255));
+
         for (let i = 0; i < this.inventory.length; i++)
         {
+            if(itemLibrary[this.inventory[i]])
+                draw_sprite(canvas, itemLibrary[this.inventory[i]], 36, 34 + (i*54));
+
             textout(canvas, mainFont, this.inventory[i],
-             16, 34 + (i*30), 20, makecol(200, 200, 200));
+             70, 34 + (i*54), 20, makecol(200, 200, 200));
         }
 
         //crafting slots
         for(let y = 0; y < this.grid.length; y++)
         {
-            for (let x = 0; x < this.grid[0].length; x++)
+            for(let x = 0; x < this.grid[0].length; x++)
             {
                 if(this.grid[y][x])
                 {
@@ -166,6 +198,9 @@ class CraftingMenu
                     this.cellW,
                     this.cellH,
                     makecol(0, 0, 0, 120));
+
+                    if(this.grid[y][x][0])
+                        draw_sprite(canvas, itemLibrary[this.grid[y][x][0]], x * this.gridDispMultX + this.gridDispBaseX + 25, y * this.gridDispMultY + this.gridDispBaseY + 25);
 
                     rect(canvas,
                     x * this.gridDispMultX + this.gridDispBaseX,
@@ -246,55 +281,6 @@ class Recipe
     }
 }
 
-
-class Item
-{
-    constructor(item, amount)
-    {
-        this.name = item;
-        this.amount = amount;
-    }
-
-    add(amount)
-    {
-        this.amount += amount;
-    }
-
-    subtract(amount)
-    {
-        this.amount -= amount;
-    }
-}
-
-/* Store as objects, because crafting is done once/input
-
-    Recipes:
-    -stored in memory (probably in an object)
-    -easy to loop through
-    -easy to retrieve data from
-
-    {input: [
-        {name: "...", type: "..."},
-        {name: "...", type: "..."},
-    ],
-    output: [
-        {name: "...", type: "..."},
-    ]
-    
-    usesAny: function(items) {
-        for (let i = 0; i < items.length; i++)
-            for (let r = 0; r < this.input.length; r++)
-                if (items[i] )
-
-        return false;
-    }
-    }
-
-
-    Inventory:
-    -Just a list of strings. Otherwise, we're restricting items to specific types for no reason
-
-*/
 
 
 /////////////////////////////////////////////////////////////////////////////////

@@ -2,11 +2,6 @@ Consider adding a scene manager to handle the flow, as main seems unsuited for i
 
 Crafting:
 
--Make a recipe book
-    Move recipe functionality to it
-    Sort out crafting scene to call things properly
--Make items have sprites
-    Test to see if objects can be used as associative arrays with string keys
 -Insert an item into a slot
 
 -Filter relevant items
