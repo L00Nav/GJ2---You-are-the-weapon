@@ -5,7 +5,6 @@ let htmlCanvas;
 
 let canvasBuffer;
 
-let sentrySprite;
 let yellowSprite;
 let greenSprite;
 let blueSprite;
@@ -34,11 +33,11 @@ const mainMenuScene = {
 
     init: function() {
         this.mainMenu = new ListMenu([
-            "New Game",
+            "What is this?",
             "Crafting",
             "Options",
-            "Cutscene",
         ], this.mainId);
+        this.mainMenu.setSubtitle("Controls - WASD F Q (or equivalent)");
 
         this.optionsMenu = new ListMenu([
             "Scale",
@@ -72,16 +71,13 @@ const mainMenuScene = {
             switch(selection)
             {
             case 0 | this.mainId:
-                currentScene = gameScene;
+                currentScene = cutScene;
                 break;
             case 1 | this.mainId:
                 currentScene = craftingScene;
                 break;
             case 2 | this.mainId:
                 this.activeMenu = this.optionsMenu;
-                break;
-            case 3 | this.mainId:
-                currentScene = cutScene;
                 break;
             case 1 | this.optionsId:
                 this.activeMenu = this.mainMenu;
@@ -162,11 +158,10 @@ const gameScene = {
     draw: function() {
         clear_to_color(canvasBuffer, this.bgColour);
         draw_sprite(canvasBuffer, this.fieldImg, 100.5, 100.5);
-        draw_sprite(canvasBuffer, sentrySprite, 100.5, 100.5);
     },
 
     update: function() {
-        if(pressed[KEY_ESC])
+        if(pressed[KEY_Q])
             currentScene = mainMenuScene;
     },
 };
@@ -206,7 +201,7 @@ const craftingScene = {
     },
 
     update: function() {
-        if(pressed[KEY_ESC])
+        if(pressed[KEY_Q])
             currentScene = mainMenuScene;
 
         if(pressed[KEY_W])
@@ -251,23 +246,13 @@ const cutScene = {
                 currentScene = mainMenuScene;    
             }
         }
-    },
-};
 
-
-
-const fontScene = {
-    
-
-    draw: function() {
-        clear_to_color(canvasBuffer, this.bgColour);
-        draw_sprite(canvasBuffer, this.fieldImg, 100.5, 100.5);
-        draw_sprite(canvasBuffer, sentrySprite, 100.5, 100.5);
-    },
-
-    update: function() {
-        if(pressed[KEY_ESC])
+        if(pressed[KEY_Q])
+        {
+            this.sm.resetIndexes();
+            this.sm.resetText();
             currentScene = mainMenuScene;
+        }
     },
 };
 
@@ -300,8 +285,13 @@ function init()
         ["", "base"],
     ]);
     cutScene.init([
-        "This is a test",
-        "Loren ipsum and all that",
+        "There's no actual game",
+        "This is just a collection of menu mechanics that I worked on",
+        "Things came up and I realised I'm not finishing this game in time",
+        "It was also a bit of an ambitious project to solo without an engine",
+        "Oh well, fun was had, things were learned",
+        "So that's the important part",
+        "Have fun with the other games. Cheerio!"
     ]);
 
     canvasBuffer = create_bitmap(windowWidth, windowHeight);
@@ -312,7 +302,6 @@ function init()
 function main()
 {
     init();
-    sentrySprite = load_bmp('./sentry.png');
     yellowSprite = create_bitmap(48, 48);
     greenSprite = create_bitmap(48, 48);
     blueSprite = create_bitmap(48, 48);

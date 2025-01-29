@@ -1,9 +1,8 @@
-Consider adding a scene manager to handle the flow, as main seems unsuited for it.
-
 Crafting:
 
--Insert an item into a slot
-
 -Filter relevant items
--Highlight items with that share a recipe with selected items
+-Insert an item into a slot
 -Actually craft
+
+Bonus:
+-Highlight items with that share a recipe with selected items

@@ -17,6 +17,7 @@ class ListMenu
         this.id = id;
         this.selection = 0;
         this.font = mainFont;
+        this.subtitle = "";
     }
 
     draw(canvas)
@@ -29,7 +30,12 @@ class ListMenu
             {
                 textout_centre(canvas, this.font, this.secondaryItems[i], windowWidth * 0.7, 110 + (i*50), 36, makecol(200, 200, 200), makecol(40, i == this.selection? 150 : 40, 40), 1);
             }
+
+        if (this.subtitle)
+            textout_centre(canvas, this.font, this.subtitle, windowWidth * 0.5, windowHeight - 30, 20, makecol(200, 200, 200));
     }
+
+    setSubtitle(sub) {this.subtitle = sub;}
 
     up()
     {
